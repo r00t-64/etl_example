@@ -18,12 +18,15 @@ def extract():
       sql_cursor = src_conn.cursor()
       
       src_cursor.execute("""  select t.name as table_name
-          from sys.tables t where t.name in ('DisProduct', ' DisProductSubcategory , ''
+          from sys.tables t where t.name in ('DisProduct', 'DisProductSubcategory' , 'DisProductSubcategory', 'DisProductSubcategory' , 'DimSalesFactory', 'FactInternetSales'
       """)
       src_tables =  src_cursor.fetchall()
-      
+      for tbl in src_tables:
+          #query and load save data do dataframe
+          df = pd.read_sql_query(f'select * FROM {tbl[0]}' , src_conn)
+          load(df, tbl[0])      
   except Exception as e:
-      
+      print("Data extract error:"  +  str(e))
   finally:
-      
+      src_conn.close()
 
