@@ -30,3 +30,21 @@ def extract():
   finally:
       src_conn.close()
 
+def load(df, tbl):
+  try:
+        rows_imported = 0
+        engine =  create_engine(f'postgresql://{uid}:{pwd}@{server}:5432/AdventureWorks')
+        print(f'Importing rows {rows_imported} to {rows_imported + len(df)} .... for table {tbl}')
+        df.to_sql(f'stg_{tbl}' , engine, if_exists='replace' , index=False)
+        rows_imported += len(df)
+        #add elapsed time to final print out
+        print("Data frame imported successful")
+  except Exception as e:
+        print("Data load error: " + str(e))
+
+try:
+      #call extract function
+      extract()
+except Exception as e:
+      print("Error while extracting data: " + str(e))
+
